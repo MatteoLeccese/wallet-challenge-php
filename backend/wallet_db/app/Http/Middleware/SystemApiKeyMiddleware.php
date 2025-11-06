@@ -22,7 +22,7 @@ class SystemApiKeyMiddleware
         $apiKeyHeader = $request->header('x-system-api-key');
 
         // Expected API key from environment variables
-        $expectedKey = env('WALLET_DB_API_KEY') ?? null;
+        $expectedKey = config('auth.wallet_db_api_key');
 
         // Validate the provided API key
         if (empty($expectedKey) || empty($apiKeyHeader) || $apiKeyHeader !== $expectedKey) {
@@ -35,6 +35,5 @@ class SystemApiKeyMiddleware
 
         // Continue request lifecycle if validation passes
         return $next($request);
-
     }
 }

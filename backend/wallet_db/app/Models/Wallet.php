@@ -21,7 +21,7 @@ class Wallet extends Model
      */
     protected $fillable = [
         'balance',
-        'customer_id',
+        'user_id',
     ];
 
     /**
@@ -29,7 +29,7 @@ class Wallet extends Model
      */
     protected $casts = [
         'id' => 'integer',
-        'customer_id' => 'integer',
+        'user_id' => 'integer',
         'balance' => 'decimal:2',
     ];
 
@@ -40,7 +40,7 @@ class Wallet extends Model
      */
     public function customer(): BelongsTo
     {
-        return $this->belongsTo(Customer::class);
+        return $this->belongsTo(User::class);
     }
 
     /**
