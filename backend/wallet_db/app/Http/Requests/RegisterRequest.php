@@ -14,9 +14,9 @@ class RegisterRequest extends FormRequest
     public function rules(): array
     {
         return [
-            'document' => 'required|string|max:50',
+            'document' => 'required|string|min:5|max:50',
             'names' => 'required|string|min:3|max:150',
-            'email' => 'required|email|max:150',
+            'email' => 'required|email|min:10|max:150',
             'phone' => 'required|string|min:10|max:30',
             'password' => 'required|string|min:6',
         ];
@@ -32,13 +32,15 @@ class RegisterRequest extends FormRequest
         return [
             'document.required' => 'The document is required.',
             'document.string' => 'The document must be a string.',
+            'document.min' => 'The minimum length for the names is 3 characters.',
             'document.max' => 'The maximum length of the document is 50 characters.',
             'names.required' => 'The name is required.',
             'names.string' => 'The name must be a string.',
             'names.min' => 'The minimum length for the names is 3 characters.',
             'names.max' => 'The maximum length of the names is 150 characters.',
             'email.required' => 'The email is required.',
-            'email.email' => '',
+            'email.email' => 'The email must be a valid email address.',
+            'email.min' => 'The minimum length for the email is 10 characters.',
             'email.max' => 'The maximum length of the email is 150 characters.',
             'phone.required' => 'The phone is required.',
             'phone.string' => 'The phone must be a string.',

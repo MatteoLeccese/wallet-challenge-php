@@ -19,6 +19,7 @@ return new class extends Migration
             $table->string('names', 150)->after('id');
             $table->string('document', 50)->unique()->after('names');
             $table->string('phone', 30)->unique()->after('email');
+            $table->softDeletes();
 
             // Indexes for fast lookup
             $table->index('document', 'IDX_users_document');
