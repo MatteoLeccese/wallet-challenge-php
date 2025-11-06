@@ -32,7 +32,6 @@ class Transaction extends Model
         'type',
         'amount',
         'wallet_id',
-        'description',
     ];
 
     /**
