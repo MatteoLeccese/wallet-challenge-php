@@ -46,7 +46,6 @@ class PaymentSession extends Model
         'deleted_at' => 'datetime',
     ];
 
-
     /**
      * Relationship: The wallet that sends the payment.
      *
