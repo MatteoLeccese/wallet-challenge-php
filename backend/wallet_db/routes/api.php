@@ -15,7 +15,7 @@ Route::prefix("auth")->group(function () {
 // Wallet routes
 Route::prefix("wallet")->middleware([VerifySanctumTokenMiddleware::class])->group(function () {
     Route::post('/top-up', [WalletController::class, 'topUp']);
-    // Route::get("/balance", [WalletController::class, "balance"]);
+    Route::get("/balance", [WalletController::class, "balance"]);
 });
 
 // Payment routes

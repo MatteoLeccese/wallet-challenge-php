@@ -23,8 +23,17 @@ class WalletController extends Controller
      */
     public function topUp(TopUpWalletRequest $request)
     {
+        // Call the service to top-up the wallet
         return $this->walletService->topUp($request->validated());
     }
 
     // Balance endpoint will be implemented later
+    public function balance(Request $request)
+    {
+        // Extract user from the request
+        $user = $request->user();
+
+        // Call the service to get the balance
+        return $this->walletService->getBalance($user->id);
+    }
 }

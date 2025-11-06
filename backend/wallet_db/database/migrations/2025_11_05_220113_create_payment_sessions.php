@@ -13,19 +13,24 @@ return new class extends Migration
     {
         Schema::create('payment_sessions', function (Blueprint $table) {
             $table->id();
-            $table->char('token', 6);
-            $table->boolean('confirmed')->default(false);
+            $table->char('token', 6)->index();
+            $table->enum('status', ['PENDING', 'COMPLETED', 'FAILED'])->default('PENDING');
             $table->decimal('amount', 15, 2);
-            $table->unsignedBigInteger('wallet_id')->nullable();
-            $table->timestamps();
-            $table->softDeletes();
-            $table->index('token', 'IDX_payment_sessions_token');
-            $table->index('wallet_id', 'IDX_payment_sessions_walletId');
-            $table->foreign('wallet_id', 'FK_payment_sessions_wallet')
+            $table->unsignedBigInteger('from_wallet_id')->nullable();
+            $table->foreign('from_wallet_id', 'FK_payment_sessions_from_wallet')
                 ->references('id')
                 ->on('wallets')
                 ->onDelete('set null')
                 ->onUpdate('cascade');
+            $table->unsignedBigInteger('to_wallet_id')->nullable();
+            $table->foreign('to_wallet_id', 'FK_payment_sessions_to_wallet')
+                ->references('id')
+                ->on('wallets')
+                ->onDelete('set null')
+                ->onUpdate('cascade');
+            $table->timestamp('expires_at')->nullable();
+            $table->timestamps();
+            $table->softDeletes();
         });
     }
 
@@ -35,8 +40,9 @@ return new class extends Migration
     public function down(): void
     {
         Schema::table('payment_sessions', function (Blueprint $table) {
-            $table->dropForeign('FK_payment_sessions_wallet');
-        });
+            $table->dropForeign('FK_payment_sessions_from_wallet');
+            $table->dropForeign('FK_payment_sessions_to_wallet');
+        }); 
         Schema::dropIfExists('payment_sessions');
     }
 };

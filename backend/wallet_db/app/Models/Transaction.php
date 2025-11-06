@@ -18,11 +18,11 @@ class Transaction extends Model
     /**
      * Allowed transaction types constants.
      */
-    public const TYPE_TOP_UP   = 'TOP_UP';
+    public const TYPE_TOP_UP = 'TOP_UP';
     public const TYPE_PURCHASE = 'PURCHASE';
-    public const TYPE_PAYMENT  = 'PAYMENT';
-    public const TYPE_DEBIT    = 'DEBIT';
-    public const TYPE_CREDIT   = 'CREDIT';
+    public const TYPE_PAYMENT = 'PAYMENT';
+    public const TYPE_DEBIT = 'DEBIT';
+    public const TYPE_CREDIT = 'CREDIT';
     public const TYPE_TRANSFER = 'TRANSFER';
 
     /**
