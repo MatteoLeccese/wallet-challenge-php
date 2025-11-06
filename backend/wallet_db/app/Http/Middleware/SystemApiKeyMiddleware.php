@@ -27,7 +27,6 @@ class SystemApiKeyMiddleware
         // Validate the provided API key
         if (empty($expectedKey) || empty($apiKeyHeader) || $apiKeyHeader !== $expectedKey) {
             return response()->json([
-                'success' => false,
                 'message' => 'Invalid or missing system API key',
                 'data' => null,
             ], 403);
