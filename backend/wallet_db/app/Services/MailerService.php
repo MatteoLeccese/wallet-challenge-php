@@ -20,17 +20,12 @@ class MailerService
   public function sendPaymentToken(string $email, string $token, int $session_id): void
   {
     $subject = 'Confirm your payment';
-
-    $textBody = "Your confirmation token is: {$token}. Session ID: {$session_id}";
-    $htmlBody = "<p>Your confirmation token is: <b>{$token}</b></p><p>Session ID: {$session_id}</p>";
-
-    Mail::raw($textBody, function ($message) use ($email, $subject, $htmlBody) {
+    $htmlBody = "<!DOCTYPE html><div style=\"display: flex; flex-direction: column; line-height: 1.6;\"><p>Your confirmation token is: <b>{$token}</b></p><p>Session ID: <b>{$session_id}</b></p></div><html>";
+  
+    Mail::html($htmlBody, function ($message) use ($email, $subject) {
       $message->to($email)
         ->subject($subject)
         ->from(config('mail.from.address'), config('mail.from.name'));
-
-      // Attach HTML version
-      $message->setBody($htmlBody, 'text/html');
     });
   }
 }

@@ -15,6 +15,11 @@ class PaymentSession extends Model
     use HasFactory;
     use SoftDeletes;
 
+    protected $table = 'payment_sessions'; 
+    protected $primaryKey = 'id';
+    public $incrementing = true;
+    protected $keyType = 'int';
+
     /**
      * Payment session status options.
      */

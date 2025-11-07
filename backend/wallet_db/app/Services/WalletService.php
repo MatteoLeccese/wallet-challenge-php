@@ -5,6 +5,7 @@ namespace App\Services;
 use App\Models\User;
 use App\Models\Wallet;
 use App\Models\Transaction;
+use App\Models\PaymentSession;
 
 /**
  * WalletService handles wallet operations such as top-up.
@@ -85,7 +86,11 @@ class WalletService
       }
 
       // Fetch the wallet with relations
-      $wallet = Wallet::with(['transactions', 'outgoingPayments', 'incomingPayments'])->find($user->wallet->id);
+      $wallet = Wallet::with([
+        'transactions',
+        'outgoingPayments' => fn ($query) => $query->where('status', 'PENDING'),
+        'incomingPayments' => fn ($query) => $query->where('status', 'PENDING'),
+      ])->find($user->wallet->id);
 
       // If the wallet is not found we throw an error
       if (!$wallet) {
@@ -138,4 +143,26 @@ class WalletService
     }
   }
 
+  /**
+   * Check available balance considering pending payments.
+   *
+   * @param int $walletId
+   * @return float
+   */
+  public function getAvailableBalance(int $walletId): float
+  {
+    $wallet = Wallet::find($walletId);
+    if (!$wallet) {
+      return 0.0;
+    }
+
+    $balance = floatval($wallet->balance);
+
+    $pending = PaymentSession::query()
+      ->where('from_wallet_id', $walletId)
+      ->where('status', PaymentSession::STATUS_PENDING)
+      ->sum('amount');
+
+    return $balance - floatval(value: $pending);
+  }
 }
