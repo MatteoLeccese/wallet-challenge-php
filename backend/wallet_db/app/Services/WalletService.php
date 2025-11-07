@@ -72,10 +72,8 @@ class WalletService
   public function getBalance(int $user_id)
   {
     try {
-      // Find the current user's wallet
       $user = User::with('wallet')->find($user_id);
 
-      // If the user or wallet is not found we throw an error
       if (!$user || !$user->wallet) {
         return response()->json([
           'status' => 404,
@@ -85,14 +83,12 @@ class WalletService
         ], 404);
       }
 
-      // Fetch the wallet with relations
       $wallet = Wallet::with([
         'transactions',
         'outgoingPayments' => fn ($query) => $query->where('status', 'PENDING'),
         'incomingPayments' => fn ($query) => $query->where('status', 'PENDING'),
       ])->find($user->wallet->id);
 
-      // If the wallet is not found we throw an error
       if (!$wallet) {
         return response()->json([
           'status' => 404,
@@ -102,7 +98,9 @@ class WalletService
         ], 404);
       }
 
-      // Return the balance and related data
+      $availableBalance = $this->getAvailableBalance($wallet->id);
+      $pendingBalance = $this->getPendingBalance($wallet->id);
+
       return response()->json([
         'status' => 200,
         'message' => 'Balance retrieved successfully',
@@ -111,6 +109,8 @@ class WalletService
           'user_id' => $user->id,
           'wallet_id' => $wallet->id,
           'balance' => $wallet->balance,
+          'available_balance' => number_format($availableBalance, 2, '.', ''),
+          'pending_balance' => number_format($pendingBalance, 2, '.', ''),
           'transactions' => $wallet->transactions->map(fn ($transaction) => [
             'id' => $transaction->id,
             'type' => $transaction->type,
@@ -118,13 +118,13 @@ class WalletService
             'reference_id' => $transaction->reference_id,
             'created_at' => $transaction->created_at,
           ]),
-          'outgoing_payments' => $wallet->outgoingPayments->map(fn ($outgoing_payment) => [
+          'outgoingPayments' => $wallet->outgoingPayments->map(fn ($outgoing_payment) => [
             'id' => $outgoing_payment->id,
             'amount' => $outgoing_payment->amount,
             'status' => $outgoing_payment->status,
             'created_at' => $outgoing_payment->created_at,
           ]),
-          'incoming_payments' => $wallet->incomingPayments->map(fn ($incoming_payment) => [
+          'incomingPayments' => $wallet->incomingPayments->map(fn ($incoming_payment) => [
             'id' => $incoming_payment->id,
             'amount' => $incoming_payment->amount,
             'status' => $incoming_payment->status,
@@ -165,4 +165,19 @@ class WalletService
 
     return $balance - floatval(value: $pending);
   }
+
+  /**
+   * Get total pending balance from payment sessions.
+   *
+   * @param int $walletId
+   * @return float
+   */
+  public function getPendingBalance(int $walletId): float
+  {
+    return PaymentSession::query()
+      ->where('from_wallet_id', $walletId)
+      ->where('status', PaymentSession::STATUS_PENDING)
+      ->sum('amount');
+  }
+
 }
