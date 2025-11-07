@@ -12,14 +12,14 @@ Route::prefix("auth")->group(function () {
 
 // Wallet
 Route::prefix("wallet")->group(function () {
-  Route::post('/top-up', [ProxyController::class, 'topUp']);
+  Route::post("/top-up", [ProxyController::class, "topUp"]);
   Route::get("/balance", [ProxyController::class, "balance"]);
 });
 
 // Payments
 Route::prefix("payments")->group(function () {
-  Route::post('/initiate-payment', [ProxyController::class, 'initiatePayment']);
+  Route::post("/initiate-payment", [ProxyController::class, "initiatePayment"]);
   Route::post("/confirm-payment", [ProxyController::class, "confirmPayment"]);
-  Route::post('/initiate-purchase', [ProxyController::class, 'initiatePurchase']);
+  Route::post("/initiate-purchase", [ProxyController::class, "initiatePurchase"]);
   Route::post("/confirm-purchase", [ProxyController::class, "confirmPurchase"]);
 });
