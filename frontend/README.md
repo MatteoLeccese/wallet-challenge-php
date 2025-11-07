@@ -7,24 +7,25 @@ React + Vite frontend for the wallet app.
 - Node.js (v18+)
 - MySql database running
 - MailHog running
-- backend/wallet-db-service running
-- backend/wallet-api-service running
+- backend/wallet_db running
+- backend/wallet_api running
 
 ## Setup
 
 1. Copy env
+- cd frontend
 - cp .env.example .env
 - Edit `.env` (commonly VITE_API_BASE or similar) to point to your API (example: `VITE_API_BASE=http://localhost:3000` if the gateway runs on 3000)
 
 2. Install  the application
-- cd frontend
 - npm install
 
 ## Run the application
 - To run the application in development mode you can use the following command:
 ```bash
-npm run start:dev
+npm run dev
 ```
+
 - To run the application in production mode you can use the following command:
 ```bash
 npm run build

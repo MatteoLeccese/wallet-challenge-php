@@ -24,13 +24,12 @@ export const Dashboard = () => {
 
   // Balance state
   const [balance, setBalance] = useState<number | string>(0);
+  const [availableBalance, setAvailableBalance] = useState<number | string>(0);
+  const [pendingBalance, setPendingBalance] = useState<number | string>(0);
 
   // Transactions state
   const [transactions, setTransactions] = useState<Transactions[]>([]);
   const [pendingTransactions, setPendingTransactions] = useState<Transactions[]>([]);
-
-  // Loading state
-  const [loading, setLoading] = useState(true);
 
   // Modals
   const [showRechargeModal, setShowRechargeModal] = useState(false);
@@ -51,6 +50,8 @@ export const Dashboard = () => {
       if (response.status === 200) {
         // Setting the balance
         setBalance(response.data.balance);
+        setAvailableBalance(response.data.available_balance);
+        setPendingBalance(response.data.pending_balance);
 
         // Setting the transactions
         setTransactions(response.data.transactions ?? []);
@@ -77,8 +78,6 @@ export const Dashboard = () => {
       }
     } catch {
       showToast('An error occurred trying to fetch the balance', 'success');
-    } finally {
-      setLoading(false);
     }
   }, [showToast]);
 
@@ -145,34 +144,37 @@ export const Dashboard = () => {
       {/* Main Content */}
       <main className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
         {/* Balance Card */}
-        <div className="wallet-card mb-8">
-          <div className="flex items-center justify-between mb-4 flex-wrap">
-            <p className="text-white/80 text-sm font-medium">Saldo Disponible</p>
-            <div className="flex items-center gap-1 flex-wrap">
-              <button
-                onClick={() => setShowHistoryModal(true)}
-                className="flex items-center gap-2 px-3 py-1.5 bg-white/20 hover:bg-white/30 rounded-lg transition-colors text-white text-sm"
-              >
-                <History className="w-4 h-4" />
-                Historial
-              </button>
-              <button
-                onClick={() => setShowPendingModal(true)}
-                className="flex items-center gap-2 px-3 py-1.5 bg-white/20 hover:bg-white/30 rounded-lg transition-colors text-white text-sm"
-              >
-                <History className="w-4 h-4" />
-                Pagos pendientes
-              </button>
+        <div className="wallet-card mb-8 flex flex-col gap-6">
+          <div className="flex justify-around text-white font-bold flex-wrap gap-4">
+            <div className="text-center">
+              <p className="text-sm text-white/70">Disponible</p>
+              <p className="text-xl">${availableBalance}</p>
+            </div>
+            <div className="text-center">
+              <p className="text-sm text-white/70">Diferido</p>
+              <p className="text-xl">${pendingBalance}</p>
+            </div>
+            <div className="text-center">
+              <p className="text-sm text-white/70">Total</p>
+              <p className="text-xl">${balance}</p>
             </div>
           </div>
-          {loading ? (
-            <div className="animate-pulse">
-              <div className="h-12 bg-white/20 rounded w-48 mb-2"></div>
-            </div>
-          ) : (
-            <h2 className="text-5xl font-bold mb-2">${balance}</h2>
-          )}
-          <p className="text-white/80 text-sm">$ - Dolares</p>
+          <div className="flex justify-center gap-3 flex-wrap">
+            <button
+              onClick={() => setShowHistoryModal(true)}
+              className="flex items-center gap-2 px-3 py-1.5 bg-white/20 hover:bg-white/30 rounded-lg transition-colors text-white text-sm"
+            >
+              <History className="w-4 h-4" />
+              Historial
+            </button>
+            <button
+              onClick={() => setShowPendingModal(true)}
+              className="flex items-center gap-2 px-3 py-1.5 bg-white/20 hover:bg-white/30 rounded-lg transition-colors text-white text-sm"
+            >
+              <History className="w-4 h-4" />
+              Pagos pendientes
+            </button>
+          </div>
         </div>
 
         {/* Action Buttons */}

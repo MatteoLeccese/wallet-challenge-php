@@ -4,6 +4,8 @@ export interface BalanceResponse {
   userId: number;
   walletId: number;
   balance: number | string;
+  available_balance: number | string;
+  pending_balance: number | string;
   transactions: Transactions[];
   outgoingPayments: IncomingOutgoingPayments[];
   incomingPayments: IncomingOutgoingPayments[];
