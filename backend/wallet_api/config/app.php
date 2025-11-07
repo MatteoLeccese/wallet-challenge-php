@@ -123,4 +123,7 @@ return [
         'store' => env('APP_MAINTENANCE_STORE', 'database'),
     ],
 
+    // Custom configurations
+    'wallet_db_url' => env('WALLET_DB_URL', 'http://localhost:8000/api'),
+    'wallet_db_api_key' => env('WALLET_DB_API_KEY', 'secretapikey'),
 ];

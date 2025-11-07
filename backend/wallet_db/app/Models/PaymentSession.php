@@ -15,14 +15,28 @@ class PaymentSession extends Model
     use HasFactory;
     use SoftDeletes;
 
+    protected $table = 'payment_sessions'; 
+    protected $primaryKey = 'id';
+    public $incrementing = true;
+    protected $keyType = 'int';
+
+    /**
+     * Payment session status options.
+     */
+    public const STATUS_PENDING = 'PENDING';
+    public const STATUS_COMPLETED = 'COMPLETED';
+    public const STATUS_FAILED = 'FAILED';
+
     /**
      * Assignable attributes.
      */
     protected $fillable = [
         'token',
-        'confirmed',
+        'status',
         'amount',
-        'wallet_id',
+        'from_wallet_id',
+        'to_wallet_id',
+        'expires_at',
     ];
 
     /**
@@ -30,39 +44,30 @@ class PaymentSession extends Model
      */
     protected $casts = [
         'id' => 'integer',
-        'wallet_id' => 'integer',
-        'confirmed' => 'boolean',
         'amount' => 'decimal:2',
+        'expires_at' => 'datetime',
+        'created_at' => 'datetime',
+        'updated_at' => 'datetime',
+        'deleted_at' => 'datetime',
     ];
 
     /**
-     * The payment session belongs to a wallet.
+     * Relationship: The wallet that sends the payment.
      *
      * @return BelongsTo
      */
-    public function wallet(): BelongsTo
+    public function fromWallet(): BelongsTo
     {
-        return $this->belongsTo(Wallet::class);
+        return $this->belongsTo(Wallet::class, 'from_wallet_id');
     }
 
     /**
-     * Check if the provided token matches the session token.
+     * Relationship: The wallet that receives the payment.
      *
-     * @param string $token
-     * @return bool
+     * @return BelongsTo
      */
-    public function matchesToken(string $token): bool
+    public function toWallet(): BelongsTo
     {
-        return $this->token === $token;
-    }
-
-    /**
-     * Mark the session as confirmed.
-     * 
-     * @return void
-     */
-    public function confirm(): void
-    {
-        $this->confirmed = true;
+        return $this->belongsTo(Wallet::class, 'to_wallet_id');
     }
 }

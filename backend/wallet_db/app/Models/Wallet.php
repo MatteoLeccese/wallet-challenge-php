@@ -34,13 +34,13 @@ class Wallet extends Model
     ];
 
     /**
-     * Relationship: The wallet belongs to a customer.
+     * Relationship: The wallet belongs to a user.
      *
      * @return BelongsTo
      */
-    public function customer(): BelongsTo
+    public function user(): BelongsTo
     {
-        return $this->belongsTo(Customer::class);
+        return $this->belongsTo(User::class);
     }
 
     /**
@@ -51,6 +51,26 @@ class Wallet extends Model
     public function transactions(): HasMany
     {
         return $this->hasMany(Transaction::class);
+    }
+
+    /**
+     * Relationship: A wallet has many outgoing payments.
+     *
+     * @return HasMany
+     */
+    public function outgoingPayments(): HasMany
+    {
+        return $this->hasMany(PaymentSession::class, 'from_wallet_id');
+    }
+
+    /**
+     * Relationship: A wallet has many incoming payments.
+     *
+     * @return HasMany
+     */
+    public function incomingPayments(): HasMany
+    {
+        return $this->hasMany(PaymentSession::class, 'to_wallet_id');
     }
 
     /**

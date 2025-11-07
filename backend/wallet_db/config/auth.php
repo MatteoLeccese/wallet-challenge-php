@@ -112,4 +112,5 @@ return [
 
     'password_timeout' => env('AUTH_PASSWORD_TIMEOUT', 10800),
 
+    'wallet_db_api_key' => env('WALLET_DB_API_KEY', 'secretapikey'),
 ];
